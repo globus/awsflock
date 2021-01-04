@@ -1,10 +1,10 @@
 AWS flock
 =========
 
-`flock`-like functionality for applications in AWS, using dynamodb as a
+``flock``-like functionality for applications in AWS, using dynamodb as a
 backend for synchronization.
 
-A simple CLI, on-par with the classic `flock` tool for synchronizing
+A simple CLI, on-par with the classic ``flock`` tool for synchronizing
 applications.
 
 Use Cases
@@ -23,15 +23,15 @@ Locks are held for a limited period of time.
 After that time, if not renewed, the lock expires and another worker may reclaim
 the lock.
 While the lock is held, the worker holding it has a "lease" on the lock, proven
-by a given `LEASE_ID`.
-A `LEASE_ID` can be used to "renew" or "release" a given lock.
+by a given ``LEASE_ID``.
+A ``LEASE_ID`` can be used to "renew" or "release" a given lock.
 
-`awsflock` requires a table in DynamoDB to store active locks.
-By default, the table name is `awsflock`, but custom names can be used.
+``awsflock`` requires a table in DynamoDB to store active locks.
+By default, the table name is ``awsflock``, but custom names can be used.
 You must create the table before locks can be used (it will never be created
 automatically).
 Locks are identified by name, and those names are unique keys into the
-`awsflock` table.
+``awsflock`` table.
 
 Locks have a limited lifetime (default: 2 hours) if not explicitly released,
 after which they may be "reclaimed" by anyone trying to acquire that lock.
@@ -44,23 +44,23 @@ after which they may be "reclaimed" by anyone trying to acquire that lock.
     are synchronized by NTP or a similar protocol. Usage where clocks cannot be
     trusted may result in incorrect lock reclamations.
 
-When you acquire a lock, you get back a `LEASE_ID`. The `LEASE_ID` can then be
+When you acquire a lock, you get back a ``LEASE_ID``. The ``LEASE_ID`` can then be
 used to renew the lock or release it. In this way, locks are held by a single
-owner for a limited period of time, and the `LEASE_ID` constitutes proof of
+owner for a limited period of time, and the ``LEASE_ID`` constitutes proof of
 ownership.
 
 Usage
 -----
 
-Full usage info can be found with `awsflock --help`.
+Full usage info can be found with ``awsflock --help``.
 
-Acquire a lock, with a 15 minute expiration, and get the lock `LEASE_ID`:
+Acquire a lock, with a 15 minute expiration, and get the lock ``LEASE_ID``:
 
 .. code-block:: bash
 
     LEASE_ID="$(awsflock acquire LockFoo --expiration 900)"
 
-Renew the lock, getting back the new `LEASE_ID` and reducing the expiration
+Renew the lock, getting back the new ``LEASE_ID`` and reducing the expiration
 window to 5 minutes:
 
 .. code-block:: bash
