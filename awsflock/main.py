@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import click
 
+from awsflock.acquire import acquire_lock
 from awsflock.common import help_opt
 from awsflock.create_table import create_table
-from awsflock.acquire import acquire_lock
 from awsflock.release import release_lock
 from awsflock.renew import renew_lock
 

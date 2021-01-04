@@ -3,7 +3,7 @@ import time
 
 import click
 
-from awsflock.common import help_opt, table_opt, pass_dynamo_client
+from awsflock.common import help_opt, pass_dynamo_client, table_opt
 
 
 def _wait_for_table_active(client, tablename):

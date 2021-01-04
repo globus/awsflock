@@ -2,7 +2,7 @@
 import botocore
 import click
 
-from awsflock.common import help_opt, table_opt, pass_dynamo_client
+from awsflock.common import help_opt, pass_dynamo_client, table_opt
 
 
 @click.command("release")

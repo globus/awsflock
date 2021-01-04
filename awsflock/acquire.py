@@ -6,10 +6,10 @@ import click
 
 from awsflock.common import (
     gen_lease_id,
-    pass_dynamo_client,
     get_lock,
     help_opt,
     owner_opt,
+    pass_dynamo_client,
     reclaim_lock,
     table_opt,
 )
