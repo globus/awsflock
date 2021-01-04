@@ -1,0 +1,73 @@
+[tool.poetry]
+name = "awsflock"
+version = "0.1.0"
+description = "Simple locking in AWS"
+authors = ["Stephen Rosen <sirosen@globus.org>"]
+license = "Apache 2.0"
+
+[tool.poetry.scripts]
+awsflock = 'awsflock:cli'
+
+[tool.poetry.dependencies]
+python = "^3.6"
+boto3 = "^1.16.47"
+click = "^7.1.2"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.1"
+pytest-cov = "^2.10.1"
+lxml = "^4.6.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.flake8]
+exclude = [
+    ".git", ".tox", "__pycache__", ".eggs", "dist", ".venv*",
+    "docs", "build", "_build"
+]
+# we enforce 80 char width with `black` "loosely", so flake8 should be set to
+# not fail on up to 90 chars of width
+max-line-length = 90
+
+# based on the flake8 conf for `black` itself:
+#   https://github.com/ambv/black/blob/master/.flake8
+#
+# W503/W504 conflict, black causes E203
+ignore = ["W503", "W504", "E203"]
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+combine_as_imports = true
+line_length = 88
+default_section = "THIRDPARTY"
+known_first_party = ["awsflock", "tests"]
+
+[tool.pytest.ini_options]
+addopts = "-v --cov awsflock --no-cov-on-fail -n auto"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+omit = [
+    "tests/*", ".venv/*"
+]
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+exclude_lines = [
+    # the pragma to disable coverage
+    "pragma: no cover",
+    # don't complain if tests don't hit unimplemented methods/modes
+    "raise NotImplementedError",
+    # don't check on executable components of importable modules
+    "if __name__ == .__main__.:",
+    # mypy-only code segments
+    "if TYPE_CHECKING:",
+    # type-checking overloads
+    "@overload",
+    "@typing.overload"
+]
+
