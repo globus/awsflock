@@ -1,10 +1,28 @@
+import functools
+import os
 import platform
 import uuid
 
+import boto3
 import botocore
 import click
 
 DEFAULT_DYNAMO_TABLE = "awsflock"
+
+
+def get_dynamo_client():
+    dynamo_endpoint_url = os.getenv("DYNAMO_ENDPOINT_URL")
+    if dynamo_endpoint_url:
+        return boto3.client("dynamodb", endpoint_url=dynamo_endpoint_url)
+    return boto3.client("dynamodb")
+
+
+def pass_dynamo_client(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, client=get_dynamo_client(), **kwargs)
+
+    return wrapper
 
 
 def gen_lease_id():

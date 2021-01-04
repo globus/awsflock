@@ -1,10 +1,9 @@
 #!/usr/bin/en python3
 import time
 
-import boto3
 import click
 
-from awsflock.common import help_opt, table_opt
+from awsflock.common import help_opt, table_opt, pass_dynamo_client
 
 
 def _wait_for_table_active(client, tablename):
@@ -28,7 +27,8 @@ def _wait_for_table_active(client, tablename):
 @click.command("create-table")
 @help_opt
 @table_opt
-def create_table(tablename):
+@pass_dynamo_client
+def create_table(client, tablename):
     """
     Create a new table for managing dynamodb locks.
 
@@ -38,7 +38,6 @@ def create_table(tablename):
       dynamodb:UpdateTimeToLive
       dynamodb:DescribeTable
     """
-    client = boto3.client("dynamodb")
     # create the table; NOTES:
     # 1. We could make the billing mode configurable in the future if there are
     #    high-throughput use-cases. We use default billing options which should

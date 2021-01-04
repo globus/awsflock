@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 import time
 
-import boto3
 import click
 
-from awsflock.common import gen_lease_id, help_opt, owner_opt, reclaim_lock, table_opt
+from awsflock.common import (
+    gen_lease_id,
+    help_opt,
+    owner_opt,
+    pass_dynamo_client,
+    reclaim_lock,
+    table_opt,
+)
 
 
 @click.command("renew")
@@ -20,7 +26,8 @@ from awsflock.common import gen_lease_id, help_opt, owner_opt, reclaim_lock, tab
     help="The duration of the lease in seconds, after which it expires if not released",
 )
 @owner_opt
-def renew_lock(lock_id, lease_id, tablename, lease_duration, owner):
+@pass_dynamo_client
+def renew_lock(client, lock_id, lease_id, tablename, lease_duration, owner):
     """
     Renew a DynamoDB Lock. Exit codes are used to signal success or failure.
 
@@ -37,8 +44,6 @@ def renew_lock(lock_id, lease_id, tablename, lease_duration, owner):
       dynamodb:PutItem
       dynamodb:GetItem
     """
-    client = boto3.client("dynamodb")
-
     # renewal is just reclaiming a lock without any preflight checks
     # (acquisition reclamation checks expiration time before trying to reclaim)
     new_lease_id = gen_lease_id()

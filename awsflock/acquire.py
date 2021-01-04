@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import time
 
-import boto3
 import botocore
 import click
 
 from awsflock.common import (
     gen_lease_id,
+    pass_dynamo_client,
     get_lock,
     help_opt,
     owner_opt,
@@ -64,8 +64,9 @@ def create_lock(client, tablename, lock_item):
     "--no-wait", is_flag=True, help="Exit immediately if the lock cannot be acquired"
 )
 @owner_opt
+@pass_dynamo_client
 def acquire_lock(
-    lock_id, tablename, verbose, lease_duration, wait_time, no_wait, owner
+    client, lock_id, tablename, verbose, lease_duration, wait_time, no_wait, owner
 ):
     """
     Acquire a DynamoDB Lock. Exit codes are used to signal success or failure.
@@ -93,8 +94,6 @@ def acquire_lock(
         "owner",
     ):
         vecho(f"  {x}={locals()[x]}", verbose)
-
-    client = boto3.client("dynamodb")
 
     lease_id = gen_lease_id()
     new_lock_item = {

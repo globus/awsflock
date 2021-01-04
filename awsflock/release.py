@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-import boto3
 import botocore
 import click
 
-from awsflock.common import help_opt, table_opt
+from awsflock.common import help_opt, table_opt, pass_dynamo_client
 
 
 @click.command("release")
@@ -11,7 +10,8 @@ from awsflock.common import help_opt, table_opt
 @table_opt
 @click.argument("LOCK_ID")
 @click.argument("LEASE_ID")
-def release_lock(tablename, lock_id, lease_id):
+@pass_dynamo_client
+def release_lock(client, tablename, lock_id, lease_id):
     """
     Release a DynamoDB Lock. Exit codes are used to signal success or failure.
 
@@ -24,7 +24,6 @@ def release_lock(tablename, lock_id, lease_id):
     Permissions required:
       dynamodb:DeleteItem
     """
-    client = boto3.client("dynamodb")
     # delete a lock while asserting that the lease ID cannot change (meaning that
     # if it is reclaimed by another client, we cannot "release" it)
     try:
