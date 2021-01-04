@@ -36,9 +36,13 @@ def help_opt(func):
 def table_opt(func):
     return click.option(
         "--tablename",
+        envvar="AWSFLOCK_TABLE",
         default=DEFAULT_DYNAMO_TABLE,
         show_default=True,
-        help="A custom name for the lock table to use",
+        help=(
+            "A custom name for the lock table to use. "
+            "Can be set with the AWSFLOCK_TABLE env var"
+        ),
     )(func)
 
 
@@ -47,7 +51,7 @@ def owner_opt(func):
         # if no owner is given, default to hostname of the current machine
         # failover to NULL in the worst case
         if not value:
-            value = platform.node() or "NULL"
+            return platform.node() or "NULL"
         return value
 
     return click.option(
@@ -56,6 +60,7 @@ def owner_opt(func):
             "The name of the lock owner. Defaults to using the hostname from the "
             "calling environment. Informational only, no impact on lock logic"
         ),
+        callback=callback,
     )(func)
 
 

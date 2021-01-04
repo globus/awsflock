@@ -47,7 +47,7 @@ default_section = "THIRDPARTY"
 known_first_party = ["awsflock", "tests"]
 
 [tool.pytest.ini_options]
-addopts = "-v --cov awsflock --no-cov-on-fail -n auto"
+addopts = "-v --cov awsflock --no-cov-on-fail"
 testpaths = ["tests"]
 
 [tool.coverage.run]
