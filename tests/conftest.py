@@ -14,6 +14,11 @@ os.environ["AWSFLOCK_TABLE"] = _tablename
 if not os.getenv("DYANMO_ENDPOINT_URL"):
     os.environ["DYNAMO_ENDPOINT_URL"] = "http://localhost:8000"
 
+# tests run with the default region and dummy credentials set
+os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
+os.environ["AWS_ACCESS_KEY_ID"] = "fooAccessKey"
+os.environ["AWS_SECRET_ACCESS_KEY"] = "fooSecretKey"
+
 
 @pytest.fixture(scope="session")
 def tablename():
