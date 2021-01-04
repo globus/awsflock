@@ -1,0 +1,28 @@
+name: Test
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    services:
+      # setup dynamodb container. reference:
+      #   https://docs.github.com/en/free-pro-team@latest/actions/guides/about-service-containers
+      dynamodb:
+        image: amazon/dynamodb-local
+        ports:
+          - 8000:8000
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: install requirements
+        run: |
+          python -m pip install poetry pre-commit
+          poetry install
+      - name: run linters
+        run: pre-commit run -a
+      - name: run tests
+        run: poetry run pytest
