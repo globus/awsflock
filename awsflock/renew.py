@@ -3,28 +3,16 @@ import time
 
 import click
 
-from awsflock.common import (
-    gen_lease_id,
-    help_opt,
-    owner_opt,
-    pass_dynamo_client,
-    reclaim_lock,
-    table_opt,
-)
+from awsflock.common import gen_lease_id, pass_dynamo_client, reclaim_lock
+from awsflock.shared_opts import help_opt, lease_duration_opt, owner_opt, table_opt
 
 
 @click.command("renew")
-@help_opt
 @click.argument("LOCK_ID")
 @click.argument("LEASE_ID")
+@help_opt
 @table_opt
-@click.option(
-    "--lease-duration",
-    type=int,
-    default=7200,
-    show_default=True,
-    help="The duration of the lease in seconds, after which it expires if not released",
-)
+@lease_duration_opt
 @owner_opt
 @pass_dynamo_client
 def renew_lock(client, lock_id, lease_id, tablename, lease_duration, owner):
@@ -50,9 +38,9 @@ def renew_lock(client, lock_id, lease_id, tablename, lease_duration, owner):
     new_lock_item = {
         "lock_id": {"S": lock_id},
         "lease_id": {"S": new_lease_id},
-        "lease_duration": {"N": str(lease_duration)},
+        "lease_duration": {"N": str(lease_duration.seconds)},
         "owner": {"S": owner},
-        "expiration_time": {"N": str(int(time.time() + lease_duration))},
+        "expiration_time": {"N": str(int(time.time() + lease_duration.seconds))},
     }
     reclaim_success = reclaim_lock(client, tablename, new_lock_item, lease_id)
 

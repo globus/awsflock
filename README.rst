@@ -58,14 +58,14 @@ Acquire a lock, with a 15 minute expiration, and get the lock ``LEASE_ID``:
 
 .. code-block:: bash
 
-    LEASE_ID="$(awsflock acquire LockFoo --expiration 900)"
+    LEASE_ID="$(awsflock acquire LockFoo --lease-duration '15 minutes')"
 
 Renew the lock, getting back the new ``LEASE_ID`` and reducing the expiration
-window to 5 minutes:
+window to 5 minutes, specified in seconds:
 
 .. code-block:: bash
 
-    LEASE_ID="$(awsflock renew LockFoo "$LEASE_ID" --expiration 300)"
+    LEASE_ID="$(awsflock renew LockFoo "$LEASE_ID" --lease-duration '300s')"
 
 Release the lock, so that others may use it:
 

@@ -2,10 +2,10 @@
 import click
 
 from awsflock.acquire import acquire_lock
-from awsflock.common import help_opt
 from awsflock.create_table import create_table
 from awsflock.release import release_lock
 from awsflock.renew import renew_lock
+from awsflock.shared_opts import help_opt
 
 
 @click.group("awsflock", no_args_is_help=True)
@@ -22,6 +22,17 @@ def main():
     also allowed to reclaim locks which are expired but haven't been cleaned up yet. Lock
     waiting does not abort early if a lock has a lease duration longer than the wait time,
     as the lock may be explicitly released.
+
+    Durations for the leases are specified during acquisition or renewal with
+    `--lease-duration` and may be given in seconds, minutes, hours, or days.
+
+    \b
+    Valid durations include
+        '15m'
+        '3 minutes'
+        '100hrs'
+        '1 day'
+        '1s'
     """
 
 

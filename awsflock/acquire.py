@@ -4,15 +4,8 @@ import time
 import botocore
 import click
 
-from awsflock.common import (
-    gen_lease_id,
-    get_lock,
-    help_opt,
-    owner_opt,
-    pass_dynamo_client,
-    reclaim_lock,
-    table_opt,
-)
+from awsflock.common import gen_lease_id, get_lock, pass_dynamo_client, reclaim_lock
+from awsflock.shared_opts import help_opt, lease_duration_opt, owner_opt, table_opt
 
 
 def vecho(message, verbose):
@@ -39,17 +32,8 @@ def create_lock(client, tablename, lock_item):
 
 
 @click.command("acquire")
-@help_opt
 @click.argument("LOCK_ID")
-@table_opt
 @click.option("--verbose", is_flag=True, help="Enable verbose output to stderr")
-@click.option(
-    "--lease-duration",
-    type=int,
-    default=7200,
-    show_default=True,
-    help="The duration of the lease in seconds, after which it expires if not released",
-)
 @click.option(
     "--wait-time",
     default=60,
@@ -63,6 +47,9 @@ def create_lock(client, tablename, lock_item):
 @click.option(
     "--no-wait", is_flag=True, help="Exit immediately if the lock cannot be acquired"
 )
+@help_opt
+@table_opt
+@lease_duration_opt
 @owner_opt
 @pass_dynamo_client
 def acquire_lock(
@@ -99,9 +86,9 @@ def acquire_lock(
     new_lock_item = {
         "lock_id": {"S": lock_id},
         "lease_id": {"S": lease_id},
-        "lease_duration": {"N": str(lease_duration)},
+        "lease_duration": {"N": str(lease_duration.seconds)},
         "owner": {"S": owner},
-        "expiration_time": {"N": str(int(time.time() + lease_duration))},
+        "expiration_time": {"N": str(int(time.time() + lease_duration.seconds))},
     }
     waited_seconds = 0
     wait_duration = 1
