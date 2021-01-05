@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "awsflock"
-version = "0.1.1"
+version = "0.2.0"
 description = "Simple locking in AWS"
-readme = "README.rst"
+readme = "README.md"
 authors = ["Stephen Rosen <sirosen@globus.org>"]
 license = "Apache 2.0"
 
